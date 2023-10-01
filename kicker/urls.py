@@ -16,14 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from kicker.views import index, RegistrationView, PlayerDetailView
+from kicker.views import (
+    index,
+    RegistrationView,
+    PlayerDetailView,
+    LocationDetailView,
+)
 
 urlpatterns = [
     path("", index, name="index"),
     path("register", RegistrationView.as_view(), name="register"),
-    path(
-        "profile/<int:pk>/", PlayerDetailView.as_view(), name="profile"
-    ),
+    path("profile/<int:pk>/", PlayerDetailView.as_view(), name="profile"),
+    path("location/<int:pk>/", LocationDetailView.as_view(), name="location"),
 ]
 
 app_name = "kicker"
