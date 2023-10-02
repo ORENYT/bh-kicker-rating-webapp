@@ -13,4 +13,3 @@ def save_search_data(request: HttpRequest, **kwargs):
         else:
             updated.pop(key, 0)
     return updated.urlencode()
-

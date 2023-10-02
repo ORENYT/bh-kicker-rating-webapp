@@ -12,6 +12,9 @@ class Player(AbstractUser):
     location = models.ForeignKey("Location", null=True,
                                  on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
     class Meta:
         verbose_name = "player"
         verbose_name_plural = "players"

@@ -1,7 +1,5 @@
-from urllib import request
-
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Q
@@ -9,12 +7,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import FormView
-from django.forms import ModelForm
 
-from kicker.forms import RegistrationForm, PlayerSearchForm, GameForm, \
-    MatchForm
-from kicker.models import Player, Location, Match, Game
+from kicker.forms import (
+    RegistrationForm,
+    PlayerSearchForm,
+    GameForm,
+    MatchForm,
+)
+from kicker.models import Player, Location
 
 
 def index(request):
@@ -58,7 +58,6 @@ class PlayerDetailView(generic.DetailView):
     model = Player
     template_name = "profile.html"
     context_object_name = "player"
-    # queryset = Player.objects.all().prefetch_related("player__games")
 
 
 class LocationDetailView(generic.DetailView):
@@ -69,9 +68,8 @@ class LocationDetailView(generic.DetailView):
 
 class TableListView(generic.ListView):
     model = Player
-    paginate_by = 10
+    paginate_by = 5
     template_name = "table.html"
-    ordering = ["-rating"]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(TableListView, self).get_context_data(**kwargs)
@@ -92,7 +90,7 @@ class TableListView(generic.ListView):
             name = form.cleaned_data["player_name"]
             return queryset.filter(
                 Q(first_name__icontains=name) | Q(last_name__icontains=name)
-            )
+            ).order_by("-rating")
         return queryset
 
 
@@ -123,20 +121,30 @@ def choose_total_games(request):
     return render(request, "games.html")
 
 
-def determine_winner(game_forms) -> int:
+def determine_winner(game_forms, match_form) -> Player:
     player_one_wins = 0
     player_two_wins = 0
+    match_data = match_form.cleaned_data
     for game in game_forms:
         cleaned_data = game.cleaned_data
-        player_one_score = cleaned_data.get('player_one_score')
-        player_two_score = cleaned_data.get('player_two_score')
+        player_one_score = cleaned_data.get("player_one_score")
+        player_two_score = cleaned_data.get("player_two_score")
         if player_one_score > player_two_score:
             player_one_wins += 1
         else:
             player_two_wins += 1
     if player_two_wins > player_one_wins:
-        return 2
-    return 1
+        winner = match_data["player2"]
+        looser = match_data["player1"]
+    else:
+        winner = match_data["player1"]
+        looser = match_data["player2"]
+    looser.rating -= 5
+    looser.save()
+    winner.rating += 5
+    winner.save()
+    return winner
+
 
 def create_match(request, num_games):
     num_games = int(num_games)
@@ -144,20 +152,23 @@ def create_match(request, num_games):
     if not request.user.is_superuser:
         return redirect("kicker:table")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         match_form = MatchForm(request.POST)
-        game_forms = [GameForm(request.POST, prefix=f'game_form_{i}') for i in
-                      range(num_games)]
+        game_forms = [
+            GameForm(request.POST, prefix=f"game_form_{i}")
+            for i in range(num_games)
+        ]
 
         if match_form.is_valid() and all(
-                [form.is_valid() for form in game_forms]):
+                [form.is_valid() for form in game_forms]
+        ):
             match = match_form.save()
             for game_form in game_forms:
                 game = game_form.save(commit=False)
                 game.match = match
                 game.save()
                 match.games.add(game)
-            winner = determine_winner(game_forms)
+            winner = determine_winner(game_forms, match_form)
             if winner == 1:
                 match.winner = match_form.cleaned_data["player1"]
             else:
@@ -166,9 +177,16 @@ def create_match(request, num_games):
             return redirect("kicker:table")
     else:
         match_form = MatchForm()
-        game_forms = [GameForm(prefix=f'game_form_{i}') for i in
-                      range(num_games)]
+        game_forms = [
+            GameForm(prefix=f"game_form_{i}") for i in range(num_games)
+        ]
 
-    return render(request, "match.html",
-                  {'match_form': match_form, 'game_forms': game_forms,
-                   'num_games': num_games})
+    return render(
+        request,
+        "match.html",
+        {
+            "match_form": match_form,
+            "game_forms": game_forms,
+            "num_games": num_games,
+        },
+    )
