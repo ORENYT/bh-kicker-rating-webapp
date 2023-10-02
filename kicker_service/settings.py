@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "kicker",
+    "crispy_bootstrap4",
+    "crispy_forms",
     "bootstrap4",
 ]
 
@@ -131,3 +133,5 @@ INTERNAL_IPS = [
 ]
 
 LOGIN_REDIRECT_URL = "/table/"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

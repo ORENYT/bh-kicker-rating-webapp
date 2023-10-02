@@ -24,16 +24,18 @@ from kicker.views import (
     LocationDetailView,
     RegisterView,
     PlayerLoginView,
+    PlayerUpdateView,
 )
 
 urlpatterns = [
     path("", index, name="index"),
-    path("register", RegisterView.as_view(), name="register"),
+    path("register/", RegisterView.as_view(), name="register"),
     path("profile/<int:pk>/", PlayerDetailView.as_view(), name="profile"),
     path("location/<int:pk>/", LocationDetailView.as_view(), name="location"),
-    path("table", TableListView.as_view(), name="table"),
-    path("logout", logout_view, name="logout"),
-    path("login", PlayerLoginView.as_view(), name="login"),
+    path("table/", TableListView.as_view(), name="table"),
+    path("logout/", logout_view, name="logout"),
+    path("login/", PlayerLoginView.as_view(), name="login"),
+    path("profile/<int:pk>/update", PlayerUpdateView.as_view(), name="update")
 ]
 
 app_name = "kicker"

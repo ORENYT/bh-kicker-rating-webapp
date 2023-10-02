@@ -16,7 +16,7 @@ from kicker.models import Player, Location
 
 def index(request):
     context = {}
-    return render(request, "blank.html", context=context)
+    return render(request, "index.html", context=context)
 
 
 def logout_view(request):
@@ -91,3 +91,19 @@ class TableListView(generic.ListView):
                 Q(last_name__icontains=name)
             )
         return queryset
+
+
+class PlayerUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Player
+    fields = ("first_name", "last_name", "location")
+    template_name = "update.html"
+    success_url = reverse_lazy("kicker:table")
+
+    def form_valid(self, form):
+        if self.object.id == self.request.user.id:
+            form.save()
+            return HttpResponseRedirect(
+                reverse_lazy("kicker:profile", args=[self.object.id]))
+        else:
+            return self.render_to_response(
+                self.get_context_data(form=form, show_modal=True))

@@ -9,7 +9,8 @@ class Player(AbstractUser):
     rating = models.IntegerField(default=1000)
     is_pro = models.BooleanField(default=False)
     registration_date = models.DateTimeField(auto_now_add=True)
-    location = models.ForeignKey("Location", null=True, on_delete=models.SET_NULL)
+    location = models.ForeignKey("Location", null=True,
+                                 on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "player"
@@ -18,9 +19,9 @@ class Player(AbstractUser):
 
 class Game(models.Model):
     player1 = models.ForeignKey(Player, on_delete=models.SET_NULL,
-                                null=True,  related_name="first_player_games")
+                                null=True, related_name="first_player_games")
     player2 = models.ForeignKey(Player, on_delete=models.SET_NULL,
-                                null=True,  related_name="second_player_games")
+                                null=True, related_name="second_player_games")
     player_one_score = models.IntegerField()
     player2_score = models.IntegerField()
 
@@ -30,6 +31,9 @@ class Location(models.Model):
     address = models.TextField()
     working_hours = models.TextField()
     admins = models.ManyToManyField(Player, related_name="administers")
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Match(models.Model):
