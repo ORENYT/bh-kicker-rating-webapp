@@ -168,11 +168,7 @@ def create_match(request, num_games):
                 game.match = match
                 game.save()
                 match.games.add(game)
-            winner = determine_winner(game_forms, match_form)
-            if winner == 1:
-                match.winner = match_form.cleaned_data["player1"]
-            else:
-                match.winner = match_form.cleaned_data["player2"]
+                match.winner = determine_winner(game_forms, match_form)
             match.save()
             return redirect("kicker:table")
     else:
