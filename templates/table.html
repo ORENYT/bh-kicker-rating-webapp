@@ -48,7 +48,10 @@
                         {% if user == player %}
                           (Me){% endif %}</a></td>
                       <td>{{ player.rating }}</td>
-                      <td>{{ player.location.name }}</td>
+                      {% if player.location_id %}
+                        <td><a href="{% url "kicker:location" pk=player.location_id %}">{{ player.location.name }}</a>
+                        </td>
+                      {% endif %}
                       <td>{{ player.registration_date|date:"Y/m/d" }}</td>
                     </tr>
                   {% endfor %}

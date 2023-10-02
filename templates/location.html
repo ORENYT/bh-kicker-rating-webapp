@@ -1,4 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-   <h1>Input location data</h1>
+
+
+  <body id="page-top">
+  <div id="wrapper">
+    {% include "includes/sidebar.html" %}
+    <div class="d-flex flex-column" id="content-wrapper">
+      <div id="content">
+        <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+          <div class="container-fluid">
+            <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
+                class="fas fa-bars"></i></button>
+          </div>
+        </nav>
+
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+              {% if location.id == 1 %}
+                <img src="{% static "locatons/top10.png" %}" alt="LocationImg" class="img-fluid mx-auto mb-3">
+              {% endif %}
+              {% if location.id == 2 %}
+                <img src="{% static "locatons/diamond.png" %}" alt="LocationImg" class="img-fluid mx-auto mb-3">
+              {% endif %}
+              {% if location.id == 3 %}
+                <img src="{% static "locatons/world.png" %}" alt="LocationImg" class="img-fluid mx-auto mb-3">
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <h2> Name: {{ location.name }}</h2>
+              <h2> Address: {{ location.address }}</h2>
+              <h2> Working hours: {{ location.working_hours }}</h2>
+              <h2> Referee:</h2>
+              {% for admin in location_list.admin %}
+                <h3> {{ admin.name }}</h3>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-lg o-hidden border-0 my-5">
+          <div class="card-body p-0"></div>
+        </div>
+      </div>
+      <footer class="bg-white sticky-footer"></footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+  </body>
+
 {% endblock %}
