@@ -9,9 +9,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import FormView
+from django.forms import ModelForm
 
-from kicker.forms import RegistrationForm, PlayerSearchForm
-from kicker.models import Player, Location
+from kicker.forms import RegistrationForm, PlayerSearchForm, GameForm, \
+    MatchForm
+from kicker.models import Player, Location, Match, Game
 
 
 def index(request):
@@ -39,7 +42,8 @@ class RegisterView(generic.CreateView):
         login(self.request, self.object)
         messages.success(self.request, "You have signed up successfully.")
         return HttpResponseRedirect(
-            reverse_lazy("kicker:profile", args=[self.object.id]))
+            reverse_lazy("kicker:profile", args=[self.object.id])
+        )
 
     def form_invalid(self, form):
         return super().form_invalid(form)
@@ -87,8 +91,7 @@ class TableListView(generic.ListView):
         if form.is_valid():
             name = form.cleaned_data["player_name"]
             return queryset.filter(
-                Q(first_name__icontains=name) |
-                Q(last_name__icontains=name)
+                Q(first_name__icontains=name) | Q(last_name__icontains=name)
             )
         return queryset
 
@@ -103,7 +106,69 @@ class PlayerUpdateView(LoginRequiredMixin, generic.UpdateView):
         if self.object.id == self.request.user.id:
             form.save()
             return HttpResponseRedirect(
-                reverse_lazy("kicker:profile", args=[self.object.id]))
+                reverse_lazy("kicker:profile", args=[self.object.id])
+            )
         else:
             return self.render_to_response(
-                self.get_context_data(form=form, show_modal=True))
+                self.get_context_data(form=form, show_modal=True)
+            )
+
+
+def choose_total_games(request):
+    if request.method == "POST":
+        num_games = request.POST.get("num_games")
+        if num_games in ("1", "3", "5"):
+            return redirect(f"/match/{num_games}/")
+
+    return render(request, "games.html")
+
+
+def determine_winner(game_forms) -> int:
+    player_one_wins = 0
+    player_two_wins = 0
+    for game in game_forms:
+        cleaned_data = game.cleaned_data
+        player_one_score = cleaned_data.get('player_one_score')
+        player_two_score = cleaned_data.get('player_two_score')
+        if player_one_score > player_two_score:
+            player_one_wins += 1
+        else:
+            player_two_wins += 1
+    if player_two_wins > player_one_wins:
+        return 2
+    return 1
+
+def create_match(request, num_games):
+    num_games = int(num_games)
+
+    if not request.user.is_superuser:
+        return redirect("kicker:table")
+
+    if request.method == 'POST':
+        match_form = MatchForm(request.POST)
+        game_forms = [GameForm(request.POST, prefix=f'game_form_{i}') for i in
+                      range(num_games)]
+
+        if match_form.is_valid() and all(
+                [form.is_valid() for form in game_forms]):
+            match = match_form.save()
+            for game_form in game_forms:
+                game = game_form.save(commit=False)
+                game.match = match
+                game.save()
+                match.games.add(game)
+            winner = determine_winner(game_forms)
+            if winner == 1:
+                match.winner = match_form.cleaned_data["player1"]
+            else:
+                match.winner = match_form.cleaned_data["player2"]
+            match.save()
+            return redirect("kicker:table")
+    else:
+        match_form = MatchForm()
+        game_forms = [GameForm(prefix=f'game_form_{i}') for i in
+                      range(num_games)]
+
+    return render(request, "match.html",
+                  {'match_form': match_form, 'game_forms': game_forms,
+                   'num_games': num_games})

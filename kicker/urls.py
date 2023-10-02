@@ -25,6 +25,8 @@ from kicker.views import (
     RegisterView,
     PlayerLoginView,
     PlayerUpdateView,
+    choose_total_games,
+    create_match
 )
 
 urlpatterns = [
@@ -35,7 +37,9 @@ urlpatterns = [
     path("table/", TableListView.as_view(), name="table"),
     path("logout/", logout_view, name="logout"),
     path("login/", PlayerLoginView.as_view(), name="login"),
-    path("profile/<int:pk>/update", PlayerUpdateView.as_view(), name="update")
+    path("profile/<int:pk>/update", PlayerUpdateView.as_view(), name="update"),
+    path("games/", choose_total_games, name="games"),
+    path("match/<int:num_games>/", create_match, name='match_create'),
 ]
 
 app_name = "kicker"

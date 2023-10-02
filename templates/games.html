@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<body class="bg-light">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="text-center">Choose Number of Games</h1>
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="num_games">Number of Games:</label>
+              <select class="form-control" id="num_games" name="num_games">
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Start Match</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+{% endblock %}

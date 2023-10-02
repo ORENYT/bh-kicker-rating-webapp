@@ -18,12 +18,8 @@ class Player(AbstractUser):
 
 
 class Game(models.Model):
-    player1 = models.ForeignKey(Player, on_delete=models.SET_NULL,
-                                null=True, related_name="first_player_games")
-    player2 = models.ForeignKey(Player, on_delete=models.SET_NULL,
-                                null=True, related_name="second_player_games")
     player_one_score = models.IntegerField()
-    player2_score = models.IntegerField()
+    player_two_score = models.IntegerField()
 
 
 class Location(models.Model):
@@ -40,6 +36,11 @@ class Match(models.Model):
     games = models.ManyToManyField(Game)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField(auto_now_add=True)
+    player1 = models.ForeignKey(Player, on_delete=models.SET_NULL,
+                                null=True, related_name="first_player_games")
+    player2 = models.ForeignKey(Player, on_delete=models.SET_NULL,
+                                null=True, related_name="second_player_games")
+    winner = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ["date"]
