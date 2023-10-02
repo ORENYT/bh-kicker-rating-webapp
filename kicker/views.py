@@ -4,12 +4,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from kicker.forms import RegistrationForm
+from kicker.forms import RegistrationForm, PlayerSearchForm
 from kicker.models import Player, Location
 
 
@@ -64,6 +65,29 @@ class LocationDetailView(generic.DetailView):
 
 class TableListView(generic.ListView):
     model = Player
-    paginate_by = 4
+    paginate_by = 10
     template_name = "table.html"
     ordering = ["-rating"]
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TableListView, self).get_context_data(**kwargs)
+        first_name = self.request.GET.get("first_name")
+        last_name = self.request.GET.get("last_name")
+        context["search_form"] = PlayerSearchForm(
+            initial={
+                "first_name": first_name,
+                "last_name": last_name,
+            }
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = Player.objects.all()
+        form = PlayerSearchForm(self.request.GET)
+        if form.is_valid():
+            name = form.cleaned_data["player_name"]
+            return queryset.filter(
+                Q(first_name__icontains=name) |
+                Q(last_name__icontains=name)
+            )
+        return queryset
