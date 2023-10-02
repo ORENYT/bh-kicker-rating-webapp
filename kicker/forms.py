@@ -9,11 +9,8 @@ class RegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = Player
-        fields = UserCreationForm.Meta.fields + (
-            "first_name",
-            "last_name",
-            "is_pro",
-        )
+        fields = ("first_name", "last_name", "email", "password1",
+                  "password2")
 
     def save(self, commit=True):
         user = super().save(commit=False)
