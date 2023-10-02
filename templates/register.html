@@ -1,51 +1,81 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<body class="bg-gradient-primary">
-<div class="container">
-  <div class="card shadow-lg o-hidden border-0 my-5">
-    <div class="card-body p-0">
-      <div class="row">
-        <div class="col-lg-5 d-none d-lg-flex">
-          <div class="flex-grow-1 bg-register-image"
-               style=""></div>
-        </div>
-        <div class="col-lg-7">
-          <div class="p-5">
-            <div class="text-center">
-              <h4 class="text-dark mb-4">Create an Account!</h4>
+  <body class="bg-gradient-primary">
+  <div class="container">
+    <div class="card shadow-lg o-hidden border-0 my-5">
+      <div class="card-body p-0">
+        <div class="row">
+          <div class="col-lg-5 d-none d-lg-flex">
+            <div class="flex-grow-1 bg-register-image"
+                 style=""></div>
+          </div>
+          <div class="col-lg-7">
+            <div class="p-5">
+              <div class="text-center">
+                <h4 class="text-dark mb-4">Create an Account!</h4>
+              </div>
+              <form action="" method="post" novalidate>
+                {% if form.errors %}
+                  <div class="text-center text-danger">
+                    {% for field in form %}
+                      {% for error in field.errors %}
+                        {% if error == "This field is required." %}
+                          <p> Field can not be empty.</p>
+                        {% else %}
+                          <p> {{ error }} </p>
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% csrf_token %}
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text"
+                                                            id="exampleFirstName" placeholder="First Name"
+                                                            name="first_name" value="{{ request.POST.first_name }}">
+                  </div>
+                  <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName"
+                                               placeholder="Last Name" name="last_name"
+                                               value="{{ request.POST.last_name }}"></div>
+                </div>
+                <div class="form-group"><input class="form-control form-control-user" type="text" id="exampleUsername"
+                                               placeholder="Username(Unique)" name="username"
+                                               value="{{ request.POST.username }}">
+                </div>
+                <div class="form-group">
+                  <label for="exampleSelect">Select favourite location:</label>
+                  <select class="form-control" id="exampleSelect" name="location">
+                    <option value="1">Top 10 billiards</option>
+                    <option value="2">Diamond Billiard</option>
+                    <option value="3">Billiard World</option>
+                  </select>
+                </div>
+                <div class="form-group"><input class="form-control form-control-user" type="email"
+                                               id="exampleInputEmail"
+                                               aria-describedby="emailHelp" placeholder="Email Address" name="email"
+                                               value="{{ request.POST.email }}">
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password"
+                                                            id="examplePasswordInput" placeholder="Password"
+                                                            name="password1"></div>
+                  <div class="col-sm-6"><input class="form-control form-control-user" type="password"
+                                               id="exampleRepeatPasswordInput" placeholder="Repeat Password"
+                                               name="password2"></div>
+                </div>
+                <button class="btn btn-primary btn-block text-white btn-user" type="submit">Register Account</button>
+                <hr>
+                <hr>
+              </form>
+              <div class="text-center"></div>
+              <div class="text-center"><a class="small" href="{% url "kicker:login" %}">Already have an account?
+                Login!</a></div>
             </div>
-            <form action="" method="post" novalidate>
-              {% csrf_token %}
-              <div class="form-group row">
-                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text"
-                                                          id="exampleFirstName" placeholder="First Name"
-                                                          name="first_name"></div>
-                <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName"
-                                             placeholder="Last Name" name="last_name"></div>
-              </div>
-              <div class="form-group"><input class="form-control form-control-user" type="email" id="exampleInputEmail"
-                                             aria-describedby="emailHelp" placeholder="Email Address" name="email">
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password"
-                                                          id="examplePasswordInput" placeholder="Password"
-                                                          name="password1"></div>
-                <div class="col-sm-6"><input class="form-control form-control-user" type="password"
-                                             id="exampleRepeatPasswordInput" placeholder="Repeat Password"
-                                             name="password2"></div>
-              </div>
-              <button class="btn btn-primary btn-block text-white btn-user" type="submit">Register Account</button>
-              <hr>
-              <hr>
-            </form>
-            <div class="text-center"></div>
-            <div class="text-center"><a class="small" href="login.html">Already have an account? Login!</a></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-</body>
+  </body>
 {% endblock %}

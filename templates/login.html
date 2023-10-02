@@ -1,34 +1,50 @@
-{% extends base.html %}
+{% extends "base.html" %}
 {% load static %}
 {% block content %}
 
-<body class="bg-gradient-primary">
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-9 col-lg-12 col-xl-10">
-      <div class="card shadow-lg o-hidden border-0 my-5">
-        <div class="card-body p-0">
-          <div class="row">
-            <div class="col-lg-6 d-none d-lg-flex">
-              <div class="flex-grow-1 bg-login-image"
-                   style="background-image: {% static "assets/img/dogs/image2.jpeg" %}"></div>
-            </div>
-            <div class="col-lg-6">
-              <div class="p-5">
-                <div class="text-center">
-                  <h4 class="text-dark mb-4">Welcome Back!</h4>
+  <body class="bg-gradient-primary">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-9 col-lg-9 col-xl-9">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+{#          <div class="card-body p-0">#}
+{#            <div class="row mx-auto">#}
+{#              <div class="col-lg-6 d-none d-lg-flex">#}
+{#                <div class="flex-grow-1 bg-login-image" style=""></div>#}
+{#              </div>#}
+{#              <div class="col-lg-6">#}
+                <div class="p-5">
+                  <div class="text-center">
+                    <h4 class="text-dark mb-4">Welcome Back!</h4>
+                  </div>
+                  <form class="user" method="post" novalidate>
+                    {% if form.errors %}
+                      <div class="text-center text-danger">
+                        {% for field in form %}
+                          {% for error in field.errors %}
+                            {% if error == "This field is required." %}
+                              <p> Field can not be empty.</p>
+                            {% else %}
+                              <p> {{ error }} </p>
+                            {% endif %}
+                          {% endfor %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                    {% csrf_token %}
+                    <div class="form-group"><input class="form-control form-control-user" type="text"
+                                                   id="exampleInputUsername" placeholder="Enter Username..."
+                                                   name="username"></div>
+                    <div class="form-group"><input class="form-control form-control-user" type="password"
+                                                   id="exampleInputPassword" placeholder="Password" name="password">
+                    </div>
+                    <button class="btn btn-primary btn-block text-white btn-user" type="submit">Login</button>
+                    <hr>
+                    <hr>
+                  </form>
+                  <div class="text-center"><a class="small" href="{% url "kicker:register" %}">Create an Account!</a>
+                  </div>
                 </div>
-                <form class="user">
-                  <div class="form-group"><input class="form-control form-control-user" type="email"
-                                                 id="exampleInputEmail" aria-describedby="emailHelp"
-                                                 placeholder="Enter Email Address..." name="email"></div>
-                  <div class="form-group"><input class="form-control form-control-user" type="password"
-                                                 id="exampleInputPassword" placeholder="Password" name="password"></div>
-                  <hr>
-                  <hr>
-                </form>
-                <div class="text-center"></div>
-                <div class="text-center"><a class="small" href="register.html">Create an Account!</a></div>
               </div>
             </div>
           </div>
@@ -36,6 +52,5 @@
       </div>
     </div>
   </div>
-</div>
-</body>
+  </body>
 {% endblock %}

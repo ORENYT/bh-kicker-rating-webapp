@@ -18,15 +18,22 @@ from django.urls import path, include
 
 from kicker.views import (
     index,
+    logout_view,
+    TableListView,
     PlayerDetailView,
-    LocationDetailView, register,
+    LocationDetailView,
+    RegisterView,
+    PlayerLoginView,
 )
 
 urlpatterns = [
     path("", index, name="index"),
-    path("register", register, name="register"),
+    path("register", RegisterView.as_view(), name="register"),
     path("profile/<int:pk>/", PlayerDetailView.as_view(), name="profile"),
     path("location/<int:pk>/", LocationDetailView.as_view(), name="location"),
+    path("table", TableListView.as_view(), name="table"),
+    path("logout", logout_view, name="logout"),
+    path("login", PlayerLoginView.as_view(), name="login"),
 ]
 
 app_name = "kicker"

@@ -6,8 +6,10 @@ from django.db import models
 
 
 class Player(AbstractUser):
-    rating = models.IntegerField()
+    rating = models.IntegerField(default=1000)
     is_pro = models.BooleanField(default=False)
+    registration_date = models.DateTimeField(auto_now_add=True)
+    location = models.ForeignKey("Location", null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "player"
@@ -27,6 +29,7 @@ class Location(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField()
     working_hours = models.TextField()
+    admins = models.ManyToManyField(Player, related_name="administers")
 
 
 class Match(models.Model):
