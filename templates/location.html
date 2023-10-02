@@ -33,8 +33,8 @@
               <h2> Address: {{ location.address }}</h2>
               <h2> Working hours: {{ location.working_hours }}</h2>
               <h2> Referee:</h2>
-              {% for admin in location_list.admin %}
-                <h3> {{ admin.name }}</h3>
+              {% for admin in location.admins.all %}
+                <h3> {{ admin.username }}</h3>
               {% endfor %}
             </div>
           </div>

@@ -30,8 +30,15 @@
           <h6 class="m-0">Player Data</h6>
         </div>
         <div class="card-body">
-          <p class="m-0">This card uses Bootstrap's default styling with no utility classes added. Global styles are the
-            only things modifying the look and feel of this default card example.</p>
+          <p class="m-0">
+            <h3>Name: {{ player.first_name }} {{ player.last_name }}</h3>
+            <h3>Rating: {{ player.rating }}</h3>
+            <h3>Location: {{ player.location }}</h3>
+            <h3>
+              Referee:
+              {% if player.is_superuser %} YES {% else %} NO {% endif %}
+            </h3>
+          </p>
         </div>
       </div>
       <div class="card mb-4"></div>
