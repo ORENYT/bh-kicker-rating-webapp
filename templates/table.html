@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <body id="page-top">
+  <div id="wrapper">
+    {% include "includes/sidebar.html" %}
+    <div class="d-flex flex-column" id="content-wrapper">
+      <div id="content">
+        <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+          <div class="container-fluid">
+            <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
+                class="fas fa-bars"></i></button>
+            <form method="get" action=""
+                  class="form-inline d-none d-sm-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+              {% csrf_token %}
+              <div class="input-group"><input class="bg-light form-control border-0 small" type="text"
+                                              placeholder="Search by name..." name="player_name">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-primary py-0"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </nav>
+        <div class="container-fluid">
+          <h3 class="text-dark mb-4">Singles Rating
+            {% if request.user.is_superuser %}
+              <a href="{% url "kicker:games" %}" class="btn btn-success float-right">
+                Add Match
+              </a>
+            {% else %}
+              <button class="btn btn-secondary float-right" disabled>
+                Not a referee
+              </button>
+            {% endif %}
+          </h3>
+          <div class="card shadow">
+            <div class="card-header py-3">
+              <p class="text-primary m-0 font-weight-bold">Players Info</p>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                <table class="table dataTable my-0" id="dataTable">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Rating</th>
+                    <th>Location</th>
+                    <th>Registration date</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for player in player_list %}
+                    <tr>
+                      <td>{{ player.first_name }} {{ player.last_name }}</td>
+                      <td><a href="{% url "kicker:profile" pk=player.id %}">{{ player.username }}
+                        {% if user == player %}
+                          (Me){% endif %}</a></td>
+                      <td>{{ player.rating }}</td>
+                      {% if player.location_id %}
+                        <td><a href="{% url "kicker:location" pk=player.location_id %}">{{ player.location.name }}</a>
+                        </td>
+                      {% endif %}
+                      <td>{{ player.registration_date|date:"Y/m/d" }}</td>
+                    </tr>
+                  {% endfor %}
+                  <tr></tr>
+                  <tr></tr>
+                  </tbody>
+                  <tfoot>
+                  <tr></tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% include "includes/pagination.html" %}
+      </div>
+      <footer class="bg-white sticky-footer">
+        <div class="container my-auto">
+          <div class="text-center my-auto copyright"><span></span></div>
+        </div>
+      </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+  </body>
+
+{% endblock %}

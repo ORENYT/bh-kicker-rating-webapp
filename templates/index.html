@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+  <body id="page-top">
+  <div id="wrapper">
+    {% include "includes/sidebar.html" %}
+    <div class="d-flex flex-column" id="content-wrapper">
+      <div id="content">
+        <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+          <div class="container-fluid">
+            <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i
+                class="fas fa-bars"></i></button>
+          </div>
+        </nav>
+
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 text-center display-4">Welcome!</h6>
+          </div>
+          <div class="card-body text-center">
+            <p class="m-0">
+              This is a website to register ranked games in Table Foosball in Bahrain. <br>
+              Also don't forget to read <a
+                href="https://www.tablesoccer.org/rules/documents/GBR-2019%20ITSF%20Standard%20Matchplay%20Rules_def.pdf">rules</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="card shadow-lg o-hidden border-0 my-5">
+          <div class="card-body p-0"></div>
+        </div>
+      </div>
+      <footer class="bg-white sticky-footer"></footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+  </body>
+
+{% endblock %}
