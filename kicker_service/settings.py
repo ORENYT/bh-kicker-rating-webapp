@@ -24,13 +24,12 @@ SECRET_KEY = "django-insecure-lua!58^@+91ex7%(sprq0(mg72mne9(#ce2vec7sbt)24fcmtw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
-    "debug_toolbar",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -41,6 +40,9 @@ INSTALLED_APPS = [
     "crispy_forms",
     "bootstrap4",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

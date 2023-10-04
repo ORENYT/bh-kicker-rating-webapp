@@ -170,7 +170,7 @@ def create_match(request, num_games):
                     game.match = match
                     game.save()
                     match.games.add(game)
-                    match.winner = determine_winner(game_forms, match_form)
+                match.winner = determine_winner(game_forms, match_form)
                 match.save()
             return redirect("kicker:table")
     else:
