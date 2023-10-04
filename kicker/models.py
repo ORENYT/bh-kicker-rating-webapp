@@ -3,6 +3,7 @@ from django.db import models
 
 
 # Create your models here.
+from django.db.models import Q
 
 
 class Player(AbstractUser):
@@ -12,6 +13,12 @@ class Player(AbstractUser):
     location = models.ForeignKey(
         "Location", null=True, on_delete=models.SET_NULL
     )
+
+    @property
+    def all_games(self):
+        return Match.objects.filter(
+            Q(player1=self) | Q(player2=self)
+        ).order_by("date")
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"

@@ -46,31 +46,7 @@
             <div class="card-body">
               <p class="m-0">
               <ul>
-                {% for match in player.first_player_games.all %}
-                  {% if match.winner == player %}
-                    {% if match.player1 == player %}
-                      <li class="text-success">
-                        WIN vs {{ match.player2 }} in {{ match.location }} at {{ match.date }} (+5)
-                      </li>
-                    {% else %}
-                      <li class="text-success">
-                        WIN vs {{ match.player1 }} in {{ match.location }} at {{ match.date }} (+5)
-                      </li>
-                    {% endif %}
-                  {% else %}
-                    {% if match.player1 == request.user %}
-                      <li class="text-danger">
-                        LOST vs {{ match.player2 }} in {{ match.location }} at {{ match.date }} (-5)
-                      </li>
-                    {% else %}
-                      <li class="text-danger">
-                        LOST vs {{ match.player1 }} in {{ match.location }} at {{ match.date }} (-5)
-                      </li>
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-
-                {% for match in player.second_player_games.all %}
+                {% for match in player.all_games.all %}
                   {% if match.winner == player %}
                     {% if match.player1 == player %}
                       <li class="text-success">
