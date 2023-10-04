@@ -1,6 +1,10 @@
 # Bahrain Kicker Rating WebApp
 > A web-application that calculates ratings and records the results of official matches
 
+## Check it out!
+
+[Kicker project deployed to Render](https://bahrain-kicker-rating.onrender.com/)
+
 A convenient and easy panel for viewing the overall rating and adding match results, 
 designed to increase interest and create a tournament format for matches.
 
