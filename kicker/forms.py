@@ -32,10 +32,33 @@ class PlayerSearchForm(forms.Form):
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        fields = ['player_one_score', 'player_two_score']
+        fields = ["player_one_score", "player_two_score"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        score1 = cleaned_data.get("player_one_score")
+        score2 = cleaned_data.get("player_two_score")
+
+        if score1 < 0:
+            raise forms.ValidationError("Score can't be negative")
+
+        if score2 < 0:
+            raise forms.ValidationError("Score can't be negative")
+
+        return cleaned_data
 
 
 class MatchForm(forms.ModelForm):
     class Meta:
         model = Match
-        fields = ['location', 'player1', 'player2']
+        fields = ["location", "player1", "player2"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        player1 = cleaned_data.get("player1")
+        player2 = cleaned_data.get("player2")
+
+        if player1 == player2:
+            raise forms.ValidationError("Player 1 and 2 must be different")
+
+        return cleaned_data
