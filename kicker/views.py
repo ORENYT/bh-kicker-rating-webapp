@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -162,14 +163,15 @@ def create_match(request, num_games):
         if match_form.is_valid() and all(
                 [form.is_valid() for form in game_forms]
         ):
-            match = match_form.save()
-            for game_form in game_forms:
-                game = game_form.save(commit=False)
-                game.match = match
-                game.save()
-                match.games.add(game)
-                match.winner = determine_winner(game_forms, match_form)
-            match.save()
+            with transaction.atomic():
+                match = match_form.save()
+                for game_form in game_forms:
+                    game = game_form.save(commit=False)
+                    game.match = match
+                    game.save()
+                    match.games.add(game)
+                    match.winner = determine_winner(game_forms, match_form)
+                match.save()
             return redirect("kicker:table")
     else:
         match_form = MatchForm()
