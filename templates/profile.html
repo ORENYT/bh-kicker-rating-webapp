@@ -40,15 +40,15 @@
         </div>
         <div class="card mb-4"></div>
         <div class="shadow card"><a class="btn btn-link text-left card-header font-weight-bold" data-toggle="collapse"
-                                    aria-expanded="true" aria-controls="collapse-4" href="#collapse-4" role="button">Games
+                                    aria-expanded="true" aria-controls="collapse-4" href="#collapse-4" role="button">Matches
           Info</a>
           <div class="collapse show" id="collapse-4">
             <div class="card-body">
               <p class="m-0">
               <ul>
-                {% for match in player.all_games.all %}
+                {% for match in matches_data %}
                   {% if match.winner == player %}
-                    {% if match.player1 == player %}
+                    {% if match.player1 == player%}
                       <li class="text-success">
                         WIN vs {{ match.player2 }} in {{ match.location }} at {{ match.date }} (+5)
                       </li>

@@ -2,30 +2,19 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-# Create your models here.
-from django.db.models import Q
-
-
 class Player(AbstractUser):
     rating = models.IntegerField(default=1000)
     is_pro = models.BooleanField(default=False)
     registration_date = models.DateTimeField(auto_now_add=True)
     location = models.ForeignKey(
-        "Location", null=True, on_delete=models.SET_NULL
+        "Location",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="players",
     )
-
-    @property
-    def all_games(self):
-        return Match.objects.filter(
-            Q(player1=self) | Q(player2=self)
-        ).order_by("date")
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
-
-    class Meta:
-        verbose_name = "player"
-        verbose_name_plural = "players"
 
 
 class Game(models.Model):
@@ -40,7 +29,7 @@ class Location(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField()
     working_hours = models.TextField()
-    admins = models.ManyToManyField(Player, related_name="administers")
+    admins = models.ManyToManyField(Player, related_name="locations")
 
     def __str__(self) -> str:
         return self.name
@@ -48,22 +37,24 @@ class Location(models.Model):
 
 class Match(models.Model):
     location = models.ForeignKey(
-        Location, on_delete=models.SET_NULL, null=True
+        Location, on_delete=models.SET_NULL, null=True, related_name="matches"
     )
     date = models.DateTimeField(auto_now_add=True)
     player1 = models.ForeignKey(
         Player,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="first_player_games",
+        related_name="first_player_matches",
     )
     player2 = models.ForeignKey(
         Player,
         on_delete=models.SET_NULL,
         null=True,
-        related_name="second_player_games",
+        related_name="second_player_matches",
     )
-    winner = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True)
+    winner = models.ForeignKey(
+        Player, on_delete=models.SET_NULL, null=True, related_name="matches"
+    )
 
     class Meta:
         ordering = ["date"]

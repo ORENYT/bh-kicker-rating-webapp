@@ -15,7 +15,7 @@ from kicker.forms import (
     GameForm,
     MatchForm,
 )
-from kicker.models import Player, Location
+from kicker.models import Player, Location, Match
 
 
 def index(request):
@@ -60,6 +60,36 @@ class PlayerDetailView(generic.DetailView):
     template_name = "profile.html"
     context_object_name = "player"
 
+    def get_queryset(self):
+        player_id = self.kwargs.get("pk")
+        queryset = (
+            Player.objects.filter(id=player_id)
+            .select_related("location")
+            .all()
+        )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(PlayerDetailView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get("pk")
+        matches_set = (
+            Match.objects.filter((Q(player1=pk) | Q(player2=pk)))
+            .select_related("player1", "player2", "winner", "location")
+            .order_by("-date")
+        )
+        matches_data = [
+            {
+                "player1": match.player1,
+                "player2": match.player2,
+                "winner": match.winner,
+                "date": match.date,
+                "location": match.location,
+            }
+            for match in matches_set
+        ]
+        context["matches_data"] = matches_data
+        return context
+
 
 class LocationDetailView(generic.DetailView):
     model = Location
@@ -89,9 +119,14 @@ class TableListView(generic.ListView):
         form = PlayerSearchForm(self.request.GET)
         if form.is_valid():
             name = form.cleaned_data["player_name"]
-            return queryset.filter(
-                Q(first_name__icontains=name) | Q(last_name__icontains=name)
-            ).order_by("-rating")
+            return (
+                queryset.filter(
+                    Q(first_name__icontains=name)
+                    | Q(last_name__icontains=name)
+                )
+                .order_by("-rating")
+                .select_related("location")
+            )
         return queryset
 
 

@@ -16,8 +16,10 @@ Python 3 Must be installed
 git clone https://github.com/ORENYT/bh-kicker-rating-webapp
 cd bh-kicker-rating-webapp
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate #Linux
+.\venv\Scripts\Activate.ps1 #Windows
 pip install -r requirements.txt
+python manage.py migrate
 python manage.py runserver #Run Django Project
 ```
 
