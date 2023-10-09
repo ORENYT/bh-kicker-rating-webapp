@@ -8,6 +8,10 @@
 A convenient and easy panel for viewing the overall rating and adding match results, 
 designed to increase interest and create a tournament format for matches.
 
+Use admin account to add results:
+* Login: admin
+* Pass: admin
+
 ## Installing / Getting started
 
 Python 3 Must be installed
@@ -31,5 +35,4 @@ python manage.py runserver #Run Django Project
 
 
 ## Demo
-
 ![Website Interface](table.png)
