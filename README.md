@@ -9,8 +9,8 @@ A convenient and easy panel for viewing the overall rating and adding match resu
 designed to increase interest and create a tournament format for matches.
 
 Use admin account to add results:
-*Login: admin
-*Pass: admin
+* Login: admin
+* Pass: admin
 
 ## Installing / Getting started
 
